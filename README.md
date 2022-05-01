@@ -1,4 +1,4 @@
-# Archive Expander
+# Archive Exploder
 
 This tool takes an archive files in the list of types supported and will expand them.  If any archive is within the current archive, it will also be expanded into a folder named with the archives name which is expanded.  By default, recursion is set to 1, but this can be set as large a desired.
 
