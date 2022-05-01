@@ -52,6 +52,10 @@ func main() {
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Archive Exploder,  Version: %s\n\nUsage: %s [options...]\n\n", version, os.Args[0])
 		flag.PrintDefaults()
+		fmt.Fprintln(os.Stderr, "\nFormats supported:")
+		for _, f := range formatTests {
+			fmt.Fprintln(os.Stderr, "  -", f.Type)
+		}
 	}
 
 	maxRec = flag.Int("r", 1, "Levels of recusion (archives-inside-archives) to expand")
