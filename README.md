@@ -1,13 +1,28 @@
 # Archive Exploder
 
-This tool takes an archive files in the list of types supported and will expand them.  If any archive is within the current archive, it will also be expanded into a folder named with the archives name which is expanded.  By default, recursion is set to 1, but this can be set as large a desired.
+This tool takes an archive files in the list of types supported and will expand
+them.  If any archive is within the current archive, it will also be expanded
+into a folder named with the archives name which is expanded.  By default,
+recursion is set to 1, but this can be set as large a desired.
 
-The goal of this tool is give one the ability to expand archives without having to extract every level one at a time which they can be all expanded at once.  Take for example, a compressed (gzip), iso file (iso9660), with package files inside.  Each layer would add N x Size, so with 5 levels of recusion, a DVD (with 4GB in size) could become on the order of 40 GB on disk if compression is used and each layer is kept.  This tool, would give you the end file structure without the transident bloat.
+The goal of this tool is give one the ability to expand archives without having
+to extract every level one at a time which they can be all expanded at once.
+Take for example, a compressed (gzip), iso file (iso9660), with package files
+inside.  Each layer would add N x Size, so with 5 levels of recusion, a DVD
+(with 4GB in size) could become on the order of 40 GB on disk if compression is
+used and each layer is kept.  This tool, would give you the end file structure
+without the transident bloat.
 
+A thing to note is the file extension is not used, but instead the underlying
+bytes.  This way a file with an incorrect extension (such as tar when one meant
+tgz) will be treated properly.
+
+## Example Commandline
 ```bash
 ./archive-exploder -output out -input debian-11.3.0-amd64-netinst.iso -r 3
 ```
 
+## Usage
 ```
 $ ./archive-exploder -h
 Archive Exploder,  Version: 0.1.20220501.1847

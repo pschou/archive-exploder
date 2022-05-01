@@ -17,6 +17,7 @@ type iso9660File struct {
 	files      []*iso9660.File
 	fileToPath map[*iso9660.File]string
 	i_file     int
+	size       int64
 }
 
 func init() {
@@ -42,7 +43,7 @@ func testISO9660(tr *tease.Reader) bool {
 	return bytes.Compare(buf, []byte{'C', 'D', '0', '0', '1'}) == 0
 }
 
-func readISO9660(tr *tease.Reader) (Archive, error) {
+func readISO9660(tr *tease.Reader, size int64) (Archive, error) {
 	img, err := iso9660.OpenImage(tr)
 	if err != nil {
 		return nil, fmt.Errorf(" error opening iso image", err)
@@ -85,10 +86,10 @@ func readISO9660(tr *tease.Reader) (Archive, error) {
 		return nil, err
 	}
 
-	sort.Slice(ret, func(i, j int) bool { return ret[i].Offset() < ret[j].Offset() })
+	sort.Slice(ret, func(i, j int) bool { return ret[i].DataOffset() < ret[j].DataOffset() })
 
 	//for i, f := range ret {
-	//	fmt.Println(i, f.Offset(), f.Size(), f)
+	//	fmt.Println(i, f.DataOffset(), f.Size(), f)
 	//}
 	tr.Seek(0, io.SeekStart)
 	tr.Pipe()
@@ -96,26 +97,18 @@ func readISO9660(tr *tease.Reader) (Archive, error) {
 		reader:     tr,
 		files:      ret,
 		fileToPath: FileToPath,
+		size:       size,
 	}, nil
 
-	/*
-		for _, c := range ret {
-			fmt.Printf("offset: %d size: %d child: %+v path: %s\n", c.Offset(), c.Size(), c.Name(), FileToName[c])
-			if c.Name() == "README.TXT" {
-				dat := make([]byte, 100)
-				tr.ReadAt(dat, c.Offset())
-				fmt.Printf("README: %s", dat)
-				return nil
-			}
-		}
-		return nil
-	*/
 }
 
 func (i *iso9660File) Type() string {
 	return "iso9660"
 }
 func (i *iso9660File) Close() {
+	if i.reader != nil {
+		i.reader.Close()
+	}
 }
 
 func (i *iso9660File) IsEOF() bool {
@@ -129,7 +122,7 @@ func (i *iso9660File) Next() (path, name string, r io.Reader, err error) {
 	}
 	if i.i_file > 0 {
 		cf := i.files[i.i_file]
-		for cf.Offset()+cf.Size() > i.files[i.i_file].Offset() {
+		for cf.DataOffset()+cf.Size() > i.files[i.i_file].DataOffset() {
 			i.i_file++
 			if i.i_file >= len(i.files) {
 				err = io.EOF
@@ -141,16 +134,16 @@ func (i *iso9660File) Next() (path, name string, r io.Reader, err error) {
 	i.i_file++
 	//i.files = i.files[1:]
 	var n int64
-	n, err = i.reader.Seek(f.Offset(), io.SeekStart)
+	n, err = i.reader.Seek(f.DataOffset(), io.SeekStart)
 	if *debug {
-		fmt.Println(f.Offset(), f.Name(), f.Size(), n)
+		fmt.Println(f.DataOffset(), f.Name(), f.Size(), n)
 	}
 	if err != nil {
 		return
 	}
 	path = i.fileToPath[f]
 	name = f.Name()
-	//fmt.Println("  limits set:", f.Offset(), f.Size())
+	//fmt.Println("  limits set:", f.DataOffset(), f.Size())
 	r = io.LimitReader(i.reader, f.Size())
 	return
 }

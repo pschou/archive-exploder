@@ -36,7 +36,7 @@ type Archive interface {
 }
 type formatTest struct {
 	Test func(*tease.Reader) bool
-	Read func(*tease.Reader) (Archive, error)
+	Read func(*tease.Reader, int64) (Archive, error)
 	Type string
 }
 
@@ -138,7 +138,7 @@ func explode(filePath string, in io.Reader, size int64, rec int) (err error) {
 		if *debug {
 			fmt.Println("archive match for", filePath, "type", ft.Type)
 		}
-		if arch, err := ft.Read(tr); err == nil {
+		if arch, err := ft.Read(tr, size); err == nil {
 			//defer arch.Close()
 			for !arch.IsEOF() {
 				//if ft.Type == "gzip" {
