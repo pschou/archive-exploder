@@ -25,7 +25,7 @@ tgz) will be treated properly.
 ## Usage
 ```
 $ ./archive-exploder -h
-Archive Exploder,  Version: 0.1.20220501.1847
+Archive Exploder,  Version: 0.1.20220501.1953
 
 Usage: ./archive-exploder [options...]
 
@@ -41,4 +41,5 @@ Usage: ./archive-exploder [options...]
 Formats supported:
   - gzip
   - iso9660
+  - zip
 ```
