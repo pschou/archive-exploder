@@ -32,7 +32,7 @@ Improvements:
 ## Usage
 ```
 $ ./archive-exploder
-Archive Exploder,  Version: 0.1.20220501.2231
+Archive Exploder,  Version: 0.1.20220502.1258
 
 Usage: ./archive-exploder [options...]
 
@@ -46,6 +46,7 @@ Usage: ./archive-exploder [options...]
         Levels of recusion (archives-inside-archives) to expand (default 1)
 
 Formats supported:
+  - debian
   - gzip
   - iso9660
   - rpm
