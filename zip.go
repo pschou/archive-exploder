@@ -70,16 +70,23 @@ func (c *ZipFile) Close() {
 }
 
 func (i *ZipFile) Next() (dir, name string, r io.Reader, err error) {
-	if i.count >= len(i.z_reader.File) {
-		return "", "", nil, io.EOF
+	var f *zip.File
+	for {
+		if i.count >= len(i.z_reader.File) {
+			return "", "", nil, io.EOF
+		}
+		f = i.z_reader.File[i.count]
+		i.count++
+		if !f.FileInfo().IsDir() {
+			break
+		}
 	}
-	f := i.z_reader.File[i.count]
-	i.count++
 
 	r, err = f.Open()
 	if err != nil {
 		return "", "", nil, err
 	}
 	dir, name = path.Split(f.Name)
+	//fmt.Println("path", dir, name, "f.Name=", f.Name)
 	return
 }
