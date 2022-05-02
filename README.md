@@ -17,6 +17,10 @@ A thing to note is the file extension is not used, but instead the underlying
 bytes.  This way a file with an incorrect extension (such as tar when one meant
 tgz) will be treated properly.
 
+TODO:
+- Handle symlinks in ISO9660 files
+- Handle non-regular files in tar (hard, sym, character, block, etc...)
+
 ## Example Commandline
 ```bash
 ./archive-exploder -output out -input debian-11.3.0-amd64-netinst.iso -r 3
@@ -25,7 +29,7 @@ tgz) will be treated properly.
 ## Usage
 ```
 $ ./archive-exploder -h
-Archive Exploder,  Version: 0.1.20220501.1953
+Archive Exploder,  Version: 0.1.20220501.2138
 
 Usage: ./archive-exploder [options...]
 
@@ -41,5 +45,6 @@ Usage: ./archive-exploder [options...]
 Formats supported:
   - gzip
   - iso9660
+  - tar
   - zip
 ```
