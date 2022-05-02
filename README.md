@@ -21,6 +21,9 @@ TODO:
 - Handle symlinks in ISO9660 files
 - Handle non-regular files in tar (hard, sym, character, block, etc...)
 
+Improvements:
+- Rework EOF handling of individual archives, size vs read error
+
 ## Example Commandline
 ```bash
 ./archive-exploder -output out -input debian-11.3.0-amd64-netinst.iso -r 3
@@ -28,15 +31,15 @@ TODO:
 
 ## Usage
 ```
-$ ./archive-exploder -h
-Archive Exploder,  Version: 0.1.20220501.2138
+$ ./archive-exploder
+Archive Exploder,  Version: 0.1.20220501.2231
 
 Usage: ./archive-exploder [options...]
 
   -debug
         Turn on debug, more verbose
   -input string
-        Path to put the extracted files (default "test.iso")
+        Path to put the extracted files
   -output string
         Path to put the extracted files (default ".")
   -r int
@@ -45,6 +48,34 @@ Usage: ./archive-exploder [options...]
 Formats supported:
   - gzip
   - iso9660
+  - rpm
   - tar
   - zip
+```
+
+## Example single level recusion:
+
+```
+$ ./archive-exploder -input tests/createrepo_c-0.10.0-18.el7.x86_64.rpm -output out
+$ find out/
+out/
+out/usr
+out/usr/bin
+out/usr/bin/createrepo_c
+out/usr/bin/mergerepo_c
+out/usr/bin/modifyrepo_c
+out/usr/bin/sqliterepo_c
+out/usr/share
+out/usr/share/bash-completion
+out/usr/share/bash-completion/completions
+out/usr/share/bash-completion/completions/createrepo_c
+out/usr/share/doc
+out/usr/share/doc/createrepo_c-0.10.0
+out/usr/share/doc/createrepo_c-0.10.0/README.md
+out/usr/share/man
+out/usr/share/man/man8
+out/usr/share/man/man8/createrepo_c.8.gz
+out/usr/share/man/man8/mergerepo_c.8.gz
+out/usr/share/man/man8/modifyrepo_c.8.gz
+out/usr/share/man/man8/sqliterepo_c.8.gz
 ```

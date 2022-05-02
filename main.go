@@ -60,9 +60,14 @@ func main() {
 
 	maxRec = flag.Int("r", 1, "Levels of recusion (archives-inside-archives) to expand")
 	var output = flag.String("output", ".", "Path to put the extracted files")
-	var input = flag.String("input", "test.iso", "Path to put the extracted files")
+	var input = flag.String("input", "", "Path to put the extracted files")
 	debug = flag.Bool("debug", false, "Turn on debug, more verbose")
 	flag.Parse()
+
+	if *input == "" {
+		flag.Usage()
+		os.Exit(0)
+	}
 
 	if *maxRec == 0 || *maxRec < -1 {
 		fmt.Println("Invalid recursion value")
