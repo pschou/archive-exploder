@@ -1,21 +1,17 @@
 # Archive Exploder
 
-This tool takes an archive files in the list of types supported and will expand
-them.  If any archive is within the current archive, it will also be expanded
-into a folder named with the archives name which is expanded.  By default,
-recursion is set to 1, but this can be set as large a desired.
+The goal of this tool is to have the ability to expand archives within archives.  This extraction, at every level, is done by use of a stream reader.  This means the final files, no matter how many layer deep of archives, can be all expanded at once.  Even more important is the reader of the archive goes in the forward only direction and the writer does not need to read in any part that is written.  This makes the best use of every drive input-output operation (IOPS).  Speedy, fast, and accurate.
 
-The goal of this tool is give one the ability to expand archives without having
-to extract every level one at a time which they can be all expanded at once.
-Take for example, a compressed (gzip), iso file (iso9660), with package files
-inside.  Each layer would add N x Size, so with 5 levels of recusion, a DVD
-(with 4GB in size) could become on the order of 40 GB on disk if compression is
-used and each layer is kept.  This tool, would give you the end file structure
-without the transident bloat.
+This tool takes an archive file and will extract/expand it.  If an archive is contained within the current archive, it will also be expanded into a folder named with the name of the holding archive.  This archive-inside-archive ability is called recursion. By default, the recursion limit is set to 1, but increasing this enables deeper levels of extraction.
 
-A thing to note is the file extension is not used, but instead the underlying
-bytes.  This way a file with an incorrect extension (such as tar when one meant
-tgz) will be treated properly.
+Take for example, a compressed (zip) iso file (iso9660) that contains Debian package files.  Once this archive-exploder is called, one will be left with directories and files with all the text files, media, and binaries which are contained within the original iso file.
+
+Space is a major consideration driving the need for this tool.  If one were extracting a large DVD image (4GB) filled with tar files, and inside each they have war/jar files.  In this case each layer would add N x Size, so, with this particular case, 4 levels of recursion, starting with a 4GB DVD, one could easily see 10GB in a final write out directory and upwards 40 GB of disk usage in holding the intermediary files.
+
+*This tool gives you the end file structure without the transient bloat.*
+
+A thing to note is the file extension is not used to determine file type, but instead the underlying bytes.  This way, a file with an incorrect extension (such as tar when one meant tgz) will be adequately treated.
+
 
 TODO:
 - Handle symlinks in ISO9660 files
@@ -32,7 +28,7 @@ Improvements:
 ## Usage
 ```
 $ ./archive-exploder
-Archive Exploder,  Version: 0.1.20220502.1258
+Archive Exploder,  Version: 0.1.20220502.1532
 
 Usage: ./archive-exploder [options...]
 
@@ -46,6 +42,7 @@ Usage: ./archive-exploder [options...]
         Levels of recusion (archives-inside-archives) to expand (default 1)
 
 Formats supported:
+  - 7zip
   - debian
   - gzip
   - iso9660
