@@ -26,7 +26,7 @@ func init() {
 
 func test7Zip(tr *tease.Reader) bool {
 	tr.Seek(0, io.SeekStart)
-	buf := make([]byte, 2)
+	buf := make([]byte, 6)
 	tr.Read(buf)
 	tr.Seek(0, io.SeekStart)
 	return bytes.Compare(buf, []byte{0x37, 0x7A, 0xBC, 0xAF, 0x27, 0x1C}) == 0

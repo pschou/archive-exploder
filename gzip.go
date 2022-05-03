@@ -6,6 +6,7 @@ import (
 	"compress/gzip"
 	"fmt"
 	"io"
+	"io/ioutil"
 
 	"github.com/pschou/tease"
 )
@@ -80,14 +81,11 @@ func (i *GzipFile) Next() (path, name string, r io.Reader, err error) {
 		return ".", "pt_1", i.gz_reader, nil
 	}
 
-	buf := make([]byte, 100)
-	n := 100
 	if *debug {
 		fmt.Println("dumping out rest of file")
 	}
-	for err != io.EOF && n == 100 {
-		n, err = i.gz_reader.Read(buf)
-	}
+
+	io.Copy(ioutil.Discard, i.gz_reader)
 
 	if *debug {
 		fmt.Println("gzip reset")
