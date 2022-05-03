@@ -23,7 +23,7 @@ func init() {
 	formatTests = append(formatTests, formatTest{
 		Test: testGzip,
 		Read: readGzip,
-		Type: "gzip",
+		Type: "gzip (and apk)",
 	})
 }
 
@@ -76,6 +76,9 @@ func (c *GzipFile) Close() {
 }
 
 func (i *GzipFile) Next() (path, name string, r io.Reader, err error) {
+	if *debug {
+		fmt.Println("next() called")
+	}
 	if i.count == 0 {
 		i.count = 1
 		return ".", "pt_1", i.gz_reader, nil

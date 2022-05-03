@@ -20,15 +20,25 @@ TODO:
 Improvements:
 - Rework EOF handling of individual archives, size vs read error
 
-## Example Commandline
+## Example ISO
 ```bash
 ./archive-exploder -output out -input debian-11.3.0-amd64-netinst.iso -r 3
+```
+
+## Example APK and DEB
+One must note that for deb and apk files, the package is a compilation of two or more archives smashed together, so you need to use recursion twice to extract the header files from the header archive(s) and then content archive.
+```bash
+./archive-exploder --input tests/aaudit-0.7.2-r2.apk -output apk/ -r 2
+```
+
+```bash
+./archive-exploder -input tests/vagrant_2.2.6_i686.deb -output testva/ -r 2
 ```
 
 ## Usage
 ```
 $ ./archive-exploder
-Archive Exploder,  Version: 0.1.20220502.1532
+Archive Exploder,  Version: 0.1.20220502.2144
 
 Usage: ./archive-exploder [options...]
 
@@ -43,11 +53,14 @@ Usage: ./archive-exploder [options...]
 
 Formats supported:
   - 7zip
+  - bzip2
   - debian
-  - gzip
+  - gzip (and apk)
   - iso9660
+  - rar
   - rpm
   - tar
+  - xz
   - zip
 ```
 

@@ -168,10 +168,10 @@ func explode(filePath string, in io.Reader, size int64, rec int) (err error) {
 					break
 				}
 				explode(path.Join(filePath, a_dir, a_file), r, to_read, rec+1)
-				pos, _ := tr.Seek(0, io.SeekCurrent)
-				if pos == size {
-					break
-				}
+				//pos, _ := tr.Seek(0, io.SeekCurrent)
+				//if pos == size {
+				//	break
+				//}
 			}
 		} else {
 			fmt.Println("Archive", filePath, "failed ", ft.Type, "error:", err)

@@ -78,8 +78,8 @@ func (i *TarFile) Next() (dir, name string, r io.Reader, err error) {
 			i.hdr = nil
 		} else {
 			hdr, err = i.a_reader.Next()
-			if err == io.EOF {
-				return "", "", nil, err
+			if err != nil {
+				return "", "", nil, io.EOF
 			}
 		}
 		if hdr.Typeflag == tar.TypeReg {
