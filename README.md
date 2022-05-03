@@ -40,14 +40,14 @@ One must note that for deb and apk files, the package file is a compilation of t
 ## Usage
 ```
 $ ./archive-exploder
-Archive Exploder,  Version: 0.1.20220502.2219
+Archive Exploder,  Version: 0.1.20220502.2233
 
 Usage: ./archive-exploder [options...]
 
   -debug
         Turn on debug, more verbose
   -input string
-        Path to put the extracted files
+        Path to input archive files
   -output string
         Path to put the extracted files (default ".")
   -r int
