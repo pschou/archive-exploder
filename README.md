@@ -16,6 +16,7 @@ A thing to note is the file extension is not used to determine file type, but in
 TODO:
 - Handle symlinks in ISO9660 files
 - Handle non-regular files in tar (hard, sym, character, block, etc...)
+- Add timestamps for internal files
 
 Improvements:
 - Rework EOF handling of individual archives, size vs read error
@@ -26,7 +27,7 @@ Improvements:
 ```
 
 ## Example APK and DEB
-One must note that for deb and apk files, the package is a compilation of two or more archives smashed together, so you need to use recursion twice to extract the header files from the header archive(s) and then content archive.
+One must note that for deb and apk files, the package file is a compilation of two or more archives smashed together, so you need to use recursion twice to extract the header files from the header archive(s) and then content archive.
 ```bash
 ./archive-exploder --input tests/aaudit-0.7.2-r2.apk -output apk/ -r 2
 ```
