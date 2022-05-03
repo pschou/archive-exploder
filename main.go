@@ -59,8 +59,8 @@ func main() {
 	}
 
 	maxRec = flag.Int("r", 1, "Levels of recusion (archives-inside-archives) to expand")
-	var output = flag.String("output", ".", "Path to put the extracted files")
-	var input = flag.String("input", "", "Path to input archive files")
+	var output = flag.String("output", ".", "Path to put the extracted file(s)")
+	var input = flag.String("input", "", "Path to input archive file")
 	debug = flag.Bool("debug", false, "Turn on debug, more verbose")
 	flag.Parse()
 

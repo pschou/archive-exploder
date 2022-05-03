@@ -47,9 +47,9 @@ Usage: ./archive-exploder [options...]
   -debug
         Turn on debug, more verbose
   -input string
-        Path to input archive files
+        Path to input archive file
   -output string
-        Path to put the extracted files (default ".")
+        Path to put the extracted file(s) (default ".")
   -r int
         Levels of recusion (archives-inside-archives) to expand (default 1)
 
