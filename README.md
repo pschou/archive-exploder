@@ -17,6 +17,7 @@ TODO:
 - Handle symlinks in ISO9660 files
 - Handle non-regular files in tar (hard, sym, character, block, etc...)
 - Add timestamps for internal files
+- When an archive matches multiple, try them one at a time to see which works
 
 Improvements:
 - Rework EOF handling of individual archives, size vs read error
@@ -39,7 +40,7 @@ One must note that for deb and apk files, the package file is a compilation of t
 ## Usage
 ```
 $ ./archive-exploder
-Archive Exploder,  Version: 0.1.20220502.2144
+Archive Exploder,  Version: 0.1.20220502.2219
 
 Usage: ./archive-exploder [options...]
 
@@ -58,11 +59,13 @@ Formats supported:
   - debian
   - gzip (and apk)
   - iso9660
+  - lzma
   - rar
   - rpm
   - tar
   - xz
   - zip
+  - zstd
 ```
 
 ## Example single level recusion:

@@ -174,13 +174,20 @@ func explode(filePath string, in io.Reader, size int64, rec int) (err error) {
 				//}
 			}
 		} else {
-			fmt.Println("Archive", filePath, "failed ", ft.Type, "error:", err)
+			if *debug {
+				fmt.Println("Archive", filePath, "failed to expand with type", ft.Type, ", ", err)
+			}
+			tr.Seek(0, io.SeekStart)
+			_, err = writeFile(filePath, tr)
 		}
 	default:
-		fmt.Println("Archive", filePath, "matches multiple formats:")
-		for _, ft := range matches {
-			fmt.Println("  ", ft.Type)
+		if *debug {
+			fmt.Println("Archive", filePath, "matches multiple formats, what to do?")
+			for _, ft := range matches {
+				fmt.Println("  ", ft.Type)
+			}
 		}
+		_, err = writeFile(filePath, tr)
 	}
 
 	return
