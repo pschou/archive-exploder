@@ -55,6 +55,7 @@ Usage: ./archive-exploder [options...]
 
 Formats supported:
   - 7zip
+  - cab
   - bzip2
   - debian
   - gzip (and apk)
