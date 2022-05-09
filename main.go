@@ -194,10 +194,10 @@ func explode(filePath string, in io.Reader, size int64, rec int) (err error) {
 }
 
 func writeFile(filePath string, in io.Reader) (int64, error) {
-	if *debug {
-		fmt.Println("Writing out file", filePath)
-	}
 	dir, _ := path.Split(filePath)
+	if *debug {
+		fmt.Println("Writing out file", filePath, "in", dir)
+	}
 	ensureDir(dir)
 	out, err := os.Create(filePath)
 	if err != nil {

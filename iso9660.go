@@ -46,7 +46,7 @@ func testISO9660(tr *tease.Reader) bool {
 func readISO9660(tr *tease.Reader, size int64) (Archive, error) {
 	img, err := iso9660.OpenImage(tr)
 	if err != nil {
-		return nil, fmt.Errorf(" error opening iso image", err)
+		return nil, fmt.Errorf(" error opening iso image: %s", err)
 	}
 
 	f, err := img.RootDir()
