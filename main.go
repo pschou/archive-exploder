@@ -96,6 +96,9 @@ func explode(filePath string, in io.Reader, size int64, rec int) (err error) {
 		//fmt.Println("reached max")
 		var n int64
 		n, err = writeFile(filePath, in)
+		if err != nil && *debug {
+			fmt.Println("Copy err:", err)
+		}
 		if size >= 0 && n != size {
 			log.Fatal("Reader.MaxDepth: copied file size does not match")
 		}
@@ -170,9 +173,9 @@ func explode(filePath string, in io.Reader, size int64, rec int) (err error) {
 				//fmt.Println("a_dir", a_dir, "a_file", a_file, r)
 				//}
 				if err != nil {
-					if err != io.EOF {
-						fmt.Println("  error advancing to next file", err, "in", filePath)
-					}
+					//if err != io.EOF {
+					//fmt.Println("  error advancing to next file", err, "in", filePath)
+					//}
 					break
 				}
 				explode(path.Join(filePath, a_dir, a_file), r, to_read, rec+1)
@@ -187,6 +190,9 @@ func explode(filePath string, in io.Reader, size int64, rec int) (err error) {
 			tr.Seek(0, io.SeekStart)
 			tr.Pipe()
 			_, err = writeFile(filePath, tr)
+			if err != nil && *debug {
+				fmt.Println("Copy err:", err)
+			}
 		}
 	default:
 		if *debug {
@@ -198,6 +204,9 @@ func explode(filePath string, in io.Reader, size int64, rec int) (err error) {
 		tr.Seek(0, io.SeekStart)
 		tr.Pipe()
 		_, err = writeFile(filePath, tr)
+		if err != nil && *debug {
+			fmt.Println("Copy err:", err)
+		}
 	}
 
 	return

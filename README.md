@@ -39,8 +39,8 @@ One must note that for deb and apk files, the package file is a compilation of t
 
 ## Usage
 ```
-$ ./archive-exploder
-Archive Exploder,  Version: 0.1.20220502.2233
+$ ./archive-exploder -h
+Archive Exploder,  Version: 0.1.20220517.1523
 
 Usage: ./archive-exploder [options...]
 
@@ -55,10 +55,10 @@ Usage: ./archive-exploder [options...]
 
 Formats supported:
   - 7zip
-  - cab
   - bzip2
+  - cab
   - debian
-  - gzip (and apk)
+  - gzip / bgzf / apk
   - iso9660
   - lzma
   - rar

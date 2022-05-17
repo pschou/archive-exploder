@@ -40,9 +40,10 @@ func testGzip(tr *tease.Reader) bool {
 }
 
 func readGzip(tr *tease.Reader, size int64) (Archive, error) {
-	a, err := readStandardGzip(tr, size)
+	a, err := readBlockGzip(tr, size)
 	if err != nil {
-		a, err = readBlockGzip(tr, size)
+		//fmt.Println("err:", err)
+		a, err = readStandardGzip(tr, size)
 	}
 	if err == nil {
 		tr.Pipe()
@@ -62,7 +63,7 @@ func readStandardGzip(tr *tease.Reader, size int64) (Archive, error) {
 	}
 
 	// Read off one byte for a test
-	b := make([]byte, 2048)
+	b := make([]byte, 1)
 	n, err := gzr.Read(b)
 	if err != nil && err != io.EOF {
 		return nil, err
@@ -156,7 +157,13 @@ func (i *GzipFile) Next() (path, name string, r io.Reader, err error) {
 	}
 	if i.count == 0 {
 		i.count = 1
-		return ".", "pt_1", i.gz_reader, nil
+		if i.gz_reader != nil {
+			return ".", "pt_1", i.gz_reader, nil
+		}
+		return ".", "pt_1", i.bgz_reader, nil
+	}
+	if i.gz_reader == nil {
+		return "", "", nil, io.EOF
 	}
 
 	if *debug {
