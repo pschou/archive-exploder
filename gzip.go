@@ -4,26 +4,30 @@ import (
 	"bufio"
 	"bytes"
 	"compress/gzip"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
 
+	"github.com/biogo/hts/bgzf"
 	"github.com/pschou/tease"
 )
 
 type GzipFile struct {
 	buf_reader *bufio.Reader
 	gz_reader  *gzip.Reader
+	bgz_reader *bgzf.Reader
 	tr_reader  *tease.Reader
 	eof        bool
 	count      int
+	gz_type    string
 }
 
 func init() {
 	formatTests = append(formatTests, formatTest{
 		Test: testGzip,
 		Read: readGzip,
-		Type: "gzip (and apk)",
+		Type: "gzip / bgzf / apk",
 	})
 }
 
@@ -36,6 +40,17 @@ func testGzip(tr *tease.Reader) bool {
 }
 
 func readGzip(tr *tease.Reader, size int64) (Archive, error) {
+	a, err := readStandardGzip(tr, size)
+	if err != nil {
+		a, err = readBlockGzip(tr, size)
+	}
+	if err == nil {
+		tr.Pipe()
+	}
+	return a, err
+}
+
+func readStandardGzip(tr *tease.Reader, size int64) (Archive, error) {
 	tr.Seek(0, io.SeekStart)
 	br := bufio.NewReader(tr)
 	gzr, err := gzip.NewReader(br)
@@ -45,6 +60,23 @@ func readGzip(tr *tease.Reader, size int64) (Archive, error) {
 		}
 		return nil, err
 	}
+
+	// Read off one byte for a test
+	b := make([]byte, 2048)
+	n, err := gzr.Read(b)
+	if err != nil && err != io.EOF {
+		return nil, err
+	}
+	if n == 0 {
+		return nil, errors.New("Gzip test failed")
+	}
+
+	// Return to the beginning and reset
+	tr.Seek(0, io.SeekStart)
+	err = gzr.Reset(tr)
+	if err != nil {
+		return nil, err
+	}
 	gzr.Multistream(false)
 
 	ret := GzipFile{
@@ -52,14 +84,54 @@ func readGzip(tr *tease.Reader, size int64) (Archive, error) {
 		gz_reader:  gzr,
 		tr_reader:  tr,
 		eof:        false,
+		gz_type:    "gzip",
 	}
 
-	tr.Pipe()
+	return &ret, nil
+}
+
+func readBlockGzip(tr *tease.Reader, size int64) (Archive, error) {
+	tr.Seek(0, io.SeekStart)
+	br := bufio.NewReader(tr)
+	gzr, err := bgzf.NewReader(br, 1)
+	if err != nil {
+		if *debug {
+			fmt.Println("Error reading gzip", err)
+		}
+		return nil, err
+	}
+
+	// Read off one byte for a test
+	b := make([]byte, 2048)
+	n, err := gzr.Read(b)
+	if err != nil && err != io.EOF {
+		return nil, err
+	}
+	if n == 0 {
+		return nil, errors.New("Gzip test failed")
+	}
+	gzr.Close()
+
+	// Return to the beginning and reset
+	tr.Seek(0, io.SeekStart)
+	gzr, err = bgzf.NewReader(br, 1)
+	if err != nil {
+		return nil, err
+	}
+
+	ret := GzipFile{
+		buf_reader: br,
+		bgz_reader: gzr,
+		tr_reader:  tr,
+		eof:        false,
+		gz_type:    "bgzf",
+	}
+
 	return &ret, nil
 }
 
 func (i *GzipFile) Type() string {
-	return "gzip"
+	return i.gz_type
 }
 
 func (i *GzipFile) IsEOF() bool {
@@ -72,6 +144,9 @@ func (c *GzipFile) Close() {
 	}
 	if c.gz_reader != nil {
 		c.gz_reader.Close()
+	}
+	if c.bgz_reader != nil {
+		c.bgz_reader.Close()
 	}
 }
 

@@ -144,6 +144,14 @@ func explode(filePath string, in io.Reader, size int64, rec int) (err error) {
 			fmt.Println("archive match for", filePath, "type", ft.Type)
 		}
 		if arch, err := ft.Read(tr, size); err == nil {
+			if err != nil {
+				fmt.Println("Read test failed for", arch.Type(), "file", filePath)
+				fmt.Println("err:", err)
+				tr.Seek(0, io.SeekStart)
+				tr.Pipe()
+				_, err = writeFile(filePath, tr)
+				return err
+			}
 			//defer arch.Close()
 			for !arch.IsEOF() {
 				//if ft.Type == "gzip" {
@@ -163,7 +171,7 @@ func explode(filePath string, in io.Reader, size int64, rec int) (err error) {
 				//}
 				if err != nil {
 					if err != io.EOF {
-						fmt.Println("  error advancing to next file", err)
+						fmt.Println("  error advancing to next file", err, "in", filePath)
 					}
 					break
 				}
@@ -174,10 +182,10 @@ func explode(filePath string, in io.Reader, size int64, rec int) (err error) {
 				//}
 			}
 		} else {
-			if *debug {
-				fmt.Println("Archive", filePath, "failed to expand with type", ft.Type, ", ", err)
-			}
+			fmt.Println("Warning: MagicBytes indicated and archive (", ft.Type, ") but failed to expand:", err)
+			fmt.Println("  ", filePath)
 			tr.Seek(0, io.SeekStart)
+			tr.Pipe()
 			_, err = writeFile(filePath, tr)
 		}
 	default:
@@ -187,6 +195,8 @@ func explode(filePath string, in io.Reader, size int64, rec int) (err error) {
 				fmt.Println("  ", ft.Type)
 			}
 		}
+		tr.Seek(0, io.SeekStart)
+		tr.Pipe()
 		_, err = writeFile(filePath, tr)
 	}
 

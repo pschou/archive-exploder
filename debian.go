@@ -7,6 +7,7 @@ import (
 
 	deb "github.com/pschou/go_debian/deb"
 	"github.com/pschou/tease"
+	//deb "pault.ag/go/debian"
 )
 
 type DEBFile struct {
